@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Página web personal de Maycol T.Sh: noticias, videos, Momentos XD y redes sociales.">
-<title>Maycol T.Sh | Noticias</title>
+<title>Maycol T.Sh | Momentosxd</title>
 <style>
 :root{--bg:#070b10;--panel:#0e151d;--panel2:#121c26;--text:#f5f7fa;--muted:#aab5c0;--accent:#ff7417;--accent2:#ff9d42;--line:#26313d}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -97,27 +97,22 @@ nav.open{display:flex}.menu{display:block}.domain{border:0!important}.hero-inner
 </section>
 
 <main><section>
-<div class="section-title"><div><h2>📰 Noticias</h2><p>Noticias y novedades actualizadas.</p></div><a class="btn" href="/">← Inicio</a></div>
-<div id="newsGrid" class="grid"><div class="empty">Cargando noticias...</div></div>
+<div class="section-title"><div><h2>✨ Momentos XD</h2><p>Mis momentos guardados.</p></div><a class="btn" href="/">← Inicio</a></div>
+<form onsubmit="addMoment(event)">
+<input id="momentTitle" placeholder="Título del momento" required>
+<input id="momentUrl" type="url" placeholder="Enlace del momento" required>
+<button class="btn primary" type="submit">＋ Guardar</button>
+</form>
+<div id="momentsGrid" class="grid"></div>
 </section>
 <script>
-async function loadNews(){
- const grid=document.getElementById('newsGrid');
- const rss='https://news.google.com/rss?hl=es-419&gl=PE&ceid=PE:es-419';
- const proxy='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss);
- try{
-  const res=await fetch(proxy,{cache:'no-store'}); if(!res.ok) throw new Error();
-  const data=await res.json(); const items=(data.items||[]).slice(0,12); if(!items.length) throw new Error();
-  grid.innerHTML=items.map(n=>`<article class="card"><div class="card-body">
-  <div class="news-meta">📰 ${new Date(n.pubDate||Date.now()).toLocaleString('es-PE')}</div>
-  <h3>${esc(n.title)}</h3><p>${esc((n.description||'').replace(/<[^>]*>/g,'').slice(0,200))}</p>
-  <a class="news-link" href="${safe(n.link)}" target="_blank" rel="noopener">Leer noticia →</a>
-  </div></article>`).join('');
- }catch(e){grid.innerHTML='<div class="empty">No se pudieron cargar las noticias ahora. Intenta nuevamente más tarde.</div>';}
-}
+function get(){return JSON.parse(localStorage.getItem('maycolMoments')||'[]')}
+function render(){const g=document.getElementById('momentsGrid'),d=get();g.innerHTML=d.length?d.map((m,i)=>`<article class="card"><div class="card-body"><div class="news-meta">✨ MOMENTO XD</div><h3>${esc(m.title)}</h3><div class="xd-actions"><a class="btn" href="${safe(m.url)}" target="_blank">Abrir</a><button onclick="del(${i})">Eliminar</button></div></div></article>`).join(''):'<div class="empty">Todavía no tienes Momentos XD guardados.</div>'}
+function addMoment(e){e.preventDefault();let d=get();d.unshift({title:document.getElementById('momentTitle').value,url:document.getElementById('momentUrl').value});localStorage.setItem('maycolMoments',JSON.stringify(d));e.target.reset();render()}
+function del(i){let d=get();d.splice(i,1);localStorage.setItem('maycolMoments',JSON.stringify(d));render()}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function safe(u){try{let x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:'#'}catch{return '#'}}
-loadNews();
+render();
 </script></main>
 
 <footer>
