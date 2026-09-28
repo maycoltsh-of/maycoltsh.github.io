@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Página web personal de Maycol T.Sh: noticias, videos, Momentos XD y redes sociales.">
-<title>Maycol T.Sh | Página oficial</title>
+<title>Maycol T.Sh | Noticias</title>
 <style>
 :root{--bg:#070b10;--panel:#0e151d;--panel2:#121c26;--text:#f5f7fa;--muted:#aab5c0;--accent:#ff7417;--accent2:#ff9d42;--line:#26313d}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -68,14 +68,14 @@ nav.open{display:flex}.menu{display:block}.domain{border:0!important}.hero-inner
 <body>
 <header>
 <div class="nav">
-<a class="brand" href="#inicio">
+<a class="brand" href="/">
 <img src="logo-maycol-tsh.jpg" alt="Logo Maycol T.Sh">
 <span><strong>Maycol T.Sh</strong><small>Ideas • Videos • Buena Vibra</small></span>
 </a>
 <button class="menu" onclick="toggleMenu()" aria-label="Abrir menú">☰</button>
 <nav id="nav">
-<a href="#inicio">Inicio</a><a href="#noticias">Noticias</a><a href="#momentos">Momentos XD</a><a href="#videos">Videos</a><a href="#redes">Redes</a>
-<a class="domain" href="#inicio">🌐 maycoltsh.com</a>
+<a href="/">Inicio</a><a href="/noticias/">Noticias</a><a href="/momentosxd/">Momentos XD</a><a href="/videos/">Videos</a><a href="/redes/">Redes</a>
+<a class="domain" href="/">🌐 maycoltsh.com</a>
 </nav>
 </div>
 </header>
@@ -89,47 +89,36 @@ nav.open{display:flex}.menu{display:block}.domain{border:0!important}.hero-inner
 <p>Un espacio personal para compartir noticias, videos, Momentos XD, ideas y contenido.</p>
 <div class="actions">
 <a class="btn primary" href="https://www.tiktok.com/@maycoltuanamash.of" target="_blank" rel="noopener">♪ Sígueme en TikTok</a>
-<a class="btn" href="#videos">▶ Ver videos</a>
+<a class="btn" href="/videos/">▶ Ver videos</a>
 </div>
 <div class="clock">🕒 <span id="dateTime">Cargando fecha y hora...</span></div>
 </div>
 </div>
 </section>
 
-<main>
-<section id="noticias">
-<div class="section-title"><div><h2>📰 Noticias</h2><p>Actualización automática desde fuentes RSS.</p></div><button class="icon-btn" onclick="loadNews()">↻ Actualizar</button></div>
+<main><section>
+<div class="section-title"><div><h2>📰 Noticias</h2><p>Noticias y novedades actualizadas.</p></div><a class="btn" href="/">← Inicio</a></div>
 <div id="newsGrid" class="grid"><div class="empty">Cargando noticias...</div></div>
 </section>
-
-<section id="momentos">
-<div class="section-title"><div><h2>✨ Momentos XD</h2><p>Guarda tus momentos favoritos en este dispositivo.</p></div></div>
-<form onsubmit="addMoment(event)">
-<input id="momentTitle" placeholder="Título del momento" required>
-<input id="momentUrl" type="url" placeholder="Enlace (TikTok, YouTube, etc.)" required>
-<button class="btn primary" type="submit">＋ Guardar</button>
-</form>
-<div id="momentsGrid" class="grid"></div>
-</section>
-
-<section id="videos">
-<div class="section-title"><div><h2>🎬 Mis Videos</h2><p>Añade tus videos de TikTok o YouTube editando esta sección.</p></div></div>
-<div class="grid">
-<article class="card"><div class="video-thumb">▶</div><div class="card-body"><h3>Bienvenidos a mi página</h3><p>Mi contenido y novedades.</p><a class="news-link" href="https://www.tiktok.com/@maycoltuanamash.of" target="_blank">Ver en TikTok →</a></div></article>
-<article class="card"><div class="video-thumb">▶</div><div class="card-body"><h3>Momentos únicos</h3><p>Contenido para compartir y recordar.</p><a class="news-link" href="#momentos">Ver Momentos XD →</a></div></article>
-<article class="card"><div class="video-thumb">▶</div><div class="card-body"><h3>Próximo video</h3><p>Agrega aquí tu próximo contenido.</p><a class="news-link" href="https://www.tiktok.com/@maycoltuanamash.of" target="_blank">Mi TikTok →</a></div></article>
-</div>
-</section>
-
-<section id="redes">
-<div class="section-title"><div><h2>📱 Mis redes</h2><p>Encuéntrame en mis plataformas.</p></div></div>
-<div class="grid">
-<a class="card" href="https://www.tiktok.com/@maycoltuanamash.of" target="_blank"><div class="card-body"><h3>♪ TikTok</h3><p>@maycoltuanamash.of</p></div></a>
-<a class="card" href="#" onclick="alert('Agrega aquí tu enlace de YouTube');return false"><div class="card-body"><h3>▶ YouTube</h3><p>Próximamente</p></div></a>
-<a class="card" href="#" onclick="alert('Agrega aquí tu enlace de Facebook');return false"><div class="card-body"><h3>f Facebook</h3><p>Mi perfil</p></div></a>
-</div>
-</section>
-</main>
+<script>
+async function loadNews(){
+ const grid=document.getElementById('newsGrid');
+ const rss='https://news.google.com/rss?hl=es-419&gl=PE&ceid=PE:es-419';
+ const proxy='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss);
+ try{
+  const res=await fetch(proxy,{cache:'no-store'}); if(!res.ok) throw new Error();
+  const data=await res.json(); const items=(data.items||[]).slice(0,12); if(!items.length) throw new Error();
+  grid.innerHTML=items.map(n=>`<article class="card"><div class="card-body">
+  <div class="news-meta">📰 ${new Date(n.pubDate||Date.now()).toLocaleString('es-PE')}</div>
+  <h3>${esc(n.title)}</h3><p>${esc((n.description||'').replace(/<[^>]*>/g,'').slice(0,200))}</p>
+  <a class="news-link" href="${safe(n.link)}" target="_blank" rel="noopener">Leer noticia →</a>
+  </div></article>`).join('');
+ }catch(e){grid.innerHTML='<div class="empty">No se pudieron cargar las noticias ahora. Intenta nuevamente más tarde.</div>';}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function safe(u){try{let x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:'#'}catch{return '#'}}
+loadNews();
+</script></main>
 
 <footer>
 <div class="footer-inner">
